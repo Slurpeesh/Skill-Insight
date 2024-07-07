@@ -1,7 +1,11 @@
 {
   "name": "skill_insight",
   "productName": "skill_insight",
-  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Slurpeesh/Skill-Insight.git"
+  },
+  "version": "0.8.0",
   "description": "Skill Insight is an application that help you to view work marketplace statistics",
   "main": ".webpack/main",
   "scripts": {
@@ -20,6 +24,7 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
     "@electron-forge/plugin-fuses": "^7.4.0",
     "@electron-forge/plugin-webpack": "^7.4.0",
+    "@electron-forge/publisher-github": "^7.4.0",
     "@electron/fuses": "^1.8.0",
     "@types/dotenv-webpack": "^7.0.7",
     "@types/react": "^18.3.3",
@@ -56,6 +61,7 @@
     "electron-squirrel-startup": "^1.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "recharts": "^2.12.7"
+    "recharts": "^2.12.7",
+    "update-electron-app": "^3.0.0"
   }
 }
