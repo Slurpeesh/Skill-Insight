@@ -1,5 +1,6 @@
 /* eslint @typescript-eslint/no-var-requires: "off" */
 import { app, BrowserWindow, ipcMain } from 'electron'
+import pLimit from 'p-limit'
 import path from 'path'
 import { updateElectronApp } from 'update-electron-app'
 import { getVacancies, getVacancySkills } from './stats'
@@ -78,9 +79,9 @@ app.on('ready', () => {
     const devToolsExt = require('electron-devtools-installer')
 
     devToolsExt
-      .default(devToolsExt.REACT_DEVELOPER_TOOLS)
-      .then((name: string) => {
-        console.log(`Added Extension:  ${name}`)
+      .default([devToolsExt.REACT_DEVELOPER_TOOLS, devToolsExt.REDUX_DEVTOOLS])
+      .then((name: string[]) => {
+        console.log(`Added Extensions:  ${name}`)
         setTimeout(() => reloadWin(), 1000)
       })
       .catch((err: string) => console.log('An error occurred: ', err))
@@ -100,57 +101,83 @@ app.on('ready', () => {
 
     const pages = data.pages
     let found = data.found
+    console.log(`Pages to be considered: ${pages}`)
 
     // limitations of hh.ru api
     if (found > 2000) {
       found = 2000
     }
 
+    console.log(`Vacancies to be considered: ${found}`)
+
     const stepsAmount = found + pages
     let currentStep = 0
 
     const clusters = []
 
+    const limit = pLimit(4)
+    let input = []
+
     for (let page = 0; page < pages; page++) {
-      currentStep += 1
-      const data = await getVacancies(
-        searchQuery,
-        113,
-        page,
-        process.env.ELECTRON_WEBPACK_APP_MAIL,
-        process.env.ELECTRON_WEBPACK_APP_ACCESS_TOKEN
+      input.push(
+        limit(() =>
+          getVacancies(
+            searchQuery,
+            113,
+            page,
+            process.env.ELECTRON_WEBPACK_APP_MAIL,
+            process.env.ELECTRON_WEBPACK_APP_ACCESS_TOKEN
+          ).then((res) => {
+            currentStep += 1
+            if (currentStep / stepsAmount >= 0.01) {
+              setProgress(currentStep / stepsAmount)
+            }
+            return res
+          })
+        )
       )
-      console.log('Current page:', data.page)
-
-      clusters.push(data.items)
-
-      if (currentStep / stepsAmount >= 0.01) {
-        setProgress(currentStep / stepsAmount)
-      }
     }
+
+    let results = await Promise.all(input)
+    for (const result of results) {
+      clusters.push(result.items)
+    }
+
+    input = []
 
     for (const vacancies of clusters) {
       for (const vacancy of vacancies) {
-        currentStep += 1
         const id = vacancy.id
-        const skills = await getVacancySkills(
-          id,
-          process.env.ELECTRON_WEBPACK_APP_MAIL,
-          process.env.ELECTRON_WEBPACK_APP_ACCESS_TOKEN
+        input.push(
+          limit(() =>
+            getVacancySkills(
+              id,
+              process.env.ELECTRON_WEBPACK_APP_MAIL,
+              process.env.ELECTRON_WEBPACK_APP_ACCESS_TOKEN
+            ).then((res) => {
+              currentStep += 1
+              setProgress(currentStep / stepsAmount)
+              return res
+            })
+          )
         )
-
-        if (skills) {
-          for (const skill of skills) {
-            if (skill in stats) {
-              stats[skill] += 1
-            } else {
-              stats[skill] = 1
-            }
-          }
-        }
-        setProgress(currentStep / stepsAmount)
       }
     }
+
+    results = await Promise.all(input)
+
+    for (const skills of results) {
+      if (skills) {
+        for (const skill of skills) {
+          if (skill in stats) {
+            stats[skill] += 1
+          } else {
+            stats[skill] = 1
+          }
+        }
+      }
+    }
+
     stats = Object.fromEntries(
       Object.entries(stats).sort((a, b) => b[1] - a[1])
     )
@@ -178,6 +205,3 @@ app.on('activate', () => {
     createWindow()
   }
 })
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
