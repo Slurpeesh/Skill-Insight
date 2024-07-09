@@ -82,7 +82,7 @@ app.on('ready', () => {
       .default([devToolsExt.REACT_DEVELOPER_TOOLS, devToolsExt.REDUX_DEVTOOLS])
       .then((name: string[]) => {
         console.log(`Added Extensions:  ${name}`)
-        setTimeout(() => reloadWin(), 1000)
+        setTimeout(() => reloadWin(), 1500)
       })
       .catch((err: string) => console.log('An error occurred: ', err))
   }
