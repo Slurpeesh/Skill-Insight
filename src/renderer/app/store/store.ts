@@ -1,9 +1,11 @@
-import statsReducer from '@/app/statsSlice'
+import statsReducer from '@/app/store/statsSlice'
+import statusReducer from '@/app/store/statusSlice'
 import { configureStore } from '@reduxjs/toolkit'
 
 export const store = configureStore({
   reducer: {
     stats: statsReducer,
+    status: statusReducer,
   },
 })
 

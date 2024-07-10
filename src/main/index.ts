@@ -23,7 +23,10 @@ if (require('electron-squirrel-startup')) {
 
 const isDev = !app.isPackaged
 
-let setProgress: (value: number) => void
+let setProgress: (
+  value: number,
+  mode?: Electron.ProgressBarOptions['mode']
+) => void
 let reloadWin: () => void
 let flash: () => void
 
@@ -41,8 +44,17 @@ const createWindow = (): void => {
 
   mainWindow.setMinimumSize(600, 400)
 
-  setProgress = (value: number) => {
-    mainWindow.setProgressBar(value)
+  setProgress = (value: number, mode?: Electron.ProgressBarOptions['mode']) => {
+    if (mode == 'error') {
+      if (!mainWindow.isFocused()) {
+        mainWindow.setProgressBar(value, { mode: mode })
+        mainWindow.once('focus', () => mainWindow.setProgressBar(0))
+      } else {
+        mainWindow.setProgressBar(0)
+      }
+    } else {
+      mainWindow.setProgressBar(value, { mode: mode })
+    }
   }
 
   reloadWin = () => {
@@ -140,6 +152,14 @@ app.on('ready', () => {
 
     let results = await Promise.all(input)
     for (const result of results) {
+      if (result.errors) {
+        if (currentStep / stepsAmount >= 0.01) {
+          setProgress(currentStep / stepsAmount, 'error')
+        } else {
+          setProgress(0.01, 'error')
+        }
+        return result
+      }
       clusters.push(result.items)
     }
 
@@ -167,6 +187,14 @@ app.on('ready', () => {
     results = await Promise.all(input)
 
     for (const skills of results) {
+      if (skills.errors) {
+        if (currentStep / stepsAmount >= 0.01) {
+          setProgress(currentStep / stepsAmount, 'error')
+        } else {
+          setProgress(0.01, 'error')
+        }
+        return skills
+      }
       if (skills) {
         for (const skill of skills) {
           if (skill in stats) {

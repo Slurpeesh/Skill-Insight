@@ -40,6 +40,9 @@ export function getVacancySkills(
   const response = fetch(url, { headers: headers })
     .then((response) => response.json())
     .then((data) => {
+      if (data.errors) {
+        return data
+      }
       const skills: Array<string> = []
       for (const skill of data.key_skills) {
         skills.push(skill.name)

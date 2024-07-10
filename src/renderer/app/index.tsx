@@ -1,5 +1,5 @@
 import App from '@/app/App'
-import { store } from '@/app/store'
+import { store } from '@/app/store/store'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 

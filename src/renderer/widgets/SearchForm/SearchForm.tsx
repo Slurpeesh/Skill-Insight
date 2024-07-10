@@ -1,5 +1,6 @@
 import { useAppDispatch, useAppSelector } from '@/app/hooks/useActions'
-import { setReady, setWaiting } from '@/app/statsSlice'
+import { setData } from '@/app/store/statsSlice'
+import { setError, setReady, setWaiting } from '@/app/store/statusSlice'
 import { useRef, useState } from 'react'
 
 interface ISearchForm {
@@ -9,13 +10,14 @@ interface ISearchForm {
 export default function SearchForm({ searchQueryName }: ISearchForm) {
   const [searhQuery, setSearchQuery] = useState('')
   const searchInput = useRef(null)
-  const stats = useAppSelector((state) => state.stats.value)
+  const status = useAppSelector((state) => state.status.value)
   const dispatch = useAppDispatch()
 
   async function getStats(searchQuery: string) {
     searchQueryName.current = searchQuery
     const response = await window.api.getStats(searchQuery)
-    dispatch(setReady(JSON.stringify(response).replaceAll(',', ', ')))
+    dispatch(setData(JSON.stringify(response).replaceAll(',', ', ')))
+    return response
   }
 
   async function searchHandler(
@@ -26,8 +28,13 @@ export default function SearchForm({ searchQueryName }: ISearchForm) {
     dispatch(setWaiting())
     const target = e.currentTarget
     target.disabled = true
-    await getStats(searhQuery)
+    const response = await getStats(searhQuery)
     target.disabled = false
+    if (response.errors) {
+      dispatch(setError())
+    } else {
+      dispatch(setReady())
+    }
   }
 
   return (
@@ -48,7 +55,7 @@ export default function SearchForm({ searchQueryName }: ISearchForm) {
           type="submit"
           onClick={(e) => searchHandler(e)}
           className={
-            stats === 'Getting stats...'
+            status === 'waiting'
               ? 'font-semibold px-4 py-2 border-[1px] border-black rounded-xl bg-gray-300'
               : 'font-semibold px-4 py-2 border-[1px] border-black rounded-xl bg-red-300 hover:bg-red-400 active:bg-red-500 focus:outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700'
           }

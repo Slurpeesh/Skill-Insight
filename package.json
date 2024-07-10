@@ -5,7 +5,7 @@
     "type": "git",
     "url": "https://github.com/Slurpeesh/Skill-Insight.git"
   },
-  "version": "0.8.0",
+  "version": "0.8.5",
   "description": "Skill Insight is an application that help you to view work marketplace statistics",
   "main": ".webpack/main",
   "scripts": {
