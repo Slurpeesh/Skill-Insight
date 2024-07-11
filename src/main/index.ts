@@ -1,5 +1,5 @@
 /* eslint @typescript-eslint/no-var-requires: "off" */
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron'
 import pLimit from 'p-limit'
 import path from 'path'
 import { updateElectronApp } from 'update-electron-app'
@@ -87,6 +87,13 @@ const createWindow = (): void => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
+  // initialising nativeTheme helps to be independent of changes of system theme
+  if (nativeTheme.shouldUseDarkColors) {
+    nativeTheme.themeSource = 'dark'
+  } else {
+    nativeTheme.themeSource = 'light'
+  }
+
   if (isDev) {
     const devToolsExt = require('electron-devtools-installer')
 
@@ -98,6 +105,14 @@ app.on('ready', () => {
       })
       .catch((err: string) => console.log('An error occurred: ', err))
   }
+
+  ipcMain.on('theme', () => {
+    if (nativeTheme.shouldUseDarkColors) {
+      nativeTheme.themeSource = 'light'
+    } else {
+      nativeTheme.themeSource = 'dark'
+    }
+  })
 
   ipcMain.handle('stats', async (e, searchQuery) => {
     setProgress(2)

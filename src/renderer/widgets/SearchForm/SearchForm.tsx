@@ -46,7 +46,7 @@ export default function SearchForm({ searchQueryName }: ISearchForm) {
           id="searchInput"
           type="text"
           value={searhQuery}
-          className="w-1/4 min-w-40 px-1 border-[1px] border-black focus:outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700"
+          className="w-1/4 min-w-40 px-1 border-[1px] border-black text-black focus:outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700"
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
@@ -56,8 +56,8 @@ export default function SearchForm({ searchQueryName }: ISearchForm) {
           onClick={(e) => searchHandler(e)}
           className={
             status === 'waiting'
-              ? 'font-semibold px-4 py-2 border-[1px] border-black rounded-xl bg-gray-300'
-              : 'font-semibold px-4 py-2 border-[1px] border-black rounded-xl bg-red-300 hover:bg-red-400 active:bg-red-500 focus:outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700'
+              ? 'font-semibold px-4 py-2 rounded-xl bg-gray-300'
+              : 'font-semibold px-4 py-2 rounded-xl bg-red-300 dark:bg-red-500 hover:bg-red-400 dark:hover:bg-red-600 active:bg-red-500 dark:active:bg-red-700 focus:outline-none focus:border-red-700 dark:focus:border-red-300 focus:ring-2 focus:ring-red-700 dark:focus:ring-red-300'
           }
         >
           Search

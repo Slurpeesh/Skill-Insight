@@ -44,10 +44,10 @@ export default function Diagram({ title }: IDiagram) {
             bottom: 5,
           }}
         >
-          <CartesianGrid strokeDasharray="3 3" fill="white" />
+          <CartesianGrid strokeDasharray="5 5" fill="white" fillOpacity={0.5} />
           <XAxis type={'number'} />
           <YAxis dataKey="name" type={'category'} />
-          <Tooltip />
+          <Tooltip labelClassName="dark:text-black" />
           <Bar dataKey="vacancies" fill="darkred" />
         </BarChart>
       </ResponsiveContainer>
