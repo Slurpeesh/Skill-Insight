@@ -1,6 +1,9 @@
 import { contextBridge, ipcRenderer } from 'electron'
 
 contextBridge.exposeInMainWorld('api', {
-  getStats: (searchQuery: string) => ipcRenderer.invoke('stats', searchQuery),
+  getStats: (searchQuery: string, locale: string) => {
+    locale = locale.toUpperCase()
+    return ipcRenderer.invoke('stats', searchQuery, locale)
+  },
   changeTheme: () => ipcRenderer.send('theme'),
 })

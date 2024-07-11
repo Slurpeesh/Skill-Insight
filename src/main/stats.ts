@@ -4,6 +4,7 @@ export function getVacancies(
   searchRequest: IpcMainInvokeEvent,
   area: number,
   page: number,
+  locale: string,
   mail: string,
   accessToken: string
 ) {
@@ -12,6 +13,7 @@ export function getVacancies(
     area: `${area}`,
     per_page: '100',
     page: `${page}`,
+    locale: `${locale}`,
   })
   const url = `https://api.hh.ru/vacancies?${params}`
   const headers = {
@@ -28,10 +30,14 @@ export function getVacancies(
 
 export function getVacancySkills(
   vacancyId: number,
+  locale: string,
   mail: string,
   accessToken: string
 ) {
-  const url = `https://api.hh.ru/vacancies/${vacancyId}`
+  const params = new URLSearchParams({
+    locale: `${locale}`,
+  })
+  const url = `https://api.hh.ru/vacancies/${vacancyId}?${params}`
   const headers = {
     'User-Agent': `Skill Insight/1.0 (${mail})`,
     Authorization: `Bearer ${accessToken}`,

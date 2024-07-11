@@ -1,3 +1,4 @@
+import langReducer from '@/app/store/langSlice'
 import statsReducer from '@/app/store/statsSlice'
 import statusReducer from '@/app/store/statusSlice'
 import themeReducer from '@/app/store/themeSlice'
@@ -8,6 +9,7 @@ export const store = configureStore({
     stats: statsReducer,
     status: statusReducer,
     theme: themeReducer,
+    lang: langReducer,
   },
 })
 

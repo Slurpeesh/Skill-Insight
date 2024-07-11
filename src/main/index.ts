@@ -114,7 +114,8 @@ app.on('ready', () => {
     }
   })
 
-  ipcMain.handle('stats', async (e, searchQuery) => {
+  ipcMain.handle('stats', async (e, searchQuery, locale) => {
+    console.log(locale)
     setProgress(2)
     let stats: IStats = {}
     console.log(searchQuery)
@@ -122,6 +123,7 @@ app.on('ready', () => {
       searchQuery,
       113,
       0,
+      locale,
       process.env.ELECTRON_WEBPACK_APP_MAIL,
       process.env.ELECTRON_WEBPACK_APP_ACCESS_TOKEN
     )
@@ -152,6 +154,7 @@ app.on('ready', () => {
             searchQuery,
             113,
             page,
+            locale,
             process.env.ELECTRON_WEBPACK_APP_MAIL,
             process.env.ELECTRON_WEBPACK_APP_ACCESS_TOKEN
           ).then((res) => {
@@ -187,6 +190,7 @@ app.on('ready', () => {
           limit(() =>
             getVacancySkills(
               id,
+              locale,
               process.env.ELECTRON_WEBPACK_APP_MAIL,
               process.env.ELECTRON_WEBPACK_APP_ACCESS_TOKEN
             ).then((res) => {

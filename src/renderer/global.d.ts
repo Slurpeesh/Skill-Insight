@@ -1,5 +1,5 @@
 export interface IElectronAPI {
-  getStats: (string) => Promise<IStats>
+  getStats: (string, string) => Promise<IStats>
   changeTheme: () => void
 }
 
