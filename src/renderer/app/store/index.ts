@@ -1,7 +1,7 @@
-import langReducer from '@/app/store/langSlice'
-import statsReducer from '@/app/store/statsSlice'
-import statusReducer from '@/app/store/statusSlice'
-import themeReducer from '@/app/store/themeSlice'
+import langReducer from '@/app/store/slices/langSlice'
+import statsReducer from '@/app/store/slices/statsSlice'
+import statusReducer from '@/app/store/slices/statusSlice'
+import themeReducer from '@/app/store/slices/themeSlice'
 import { configureStore } from '@reduxjs/toolkit'
 
 export const store = configureStore({

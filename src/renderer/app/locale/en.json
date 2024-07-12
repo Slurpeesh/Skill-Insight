@@ -3,5 +3,6 @@
   "searchButton": "Search",
   "waitStats": "Getting stats...",
   "error": "ERROR",
-  "results": "Results"
+  "results": "Results",
+  "diagramTitle": "Number of key skills in vacancies"
 }

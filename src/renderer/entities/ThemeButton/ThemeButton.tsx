@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@/app/hooks/useActions'
-import { setDark, setLight } from '@/app/store/themeSlice'
+import { setDark, setLight } from '@/app/store/slices/themeSlice'
 
 interface IThemeButton {
   className?: string

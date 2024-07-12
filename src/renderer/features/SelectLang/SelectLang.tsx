@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@/app/hooks/useActions'
-import { setEn, setRu } from '@/app/store/langSlice'
+import { setEn, setRu } from '@/app/store/slices/langSlice'
 import {
   Select,
   SelectContent,
@@ -29,9 +29,9 @@ export default function SelectLang({
   }
 
   return (
-    <Select onValueChange={(value) => langChangeHandler(value)}>
+    <Select value={lang} onValueChange={(value) => langChangeHandler(value)}>
       <SelectTrigger className={classNameTrigger}>
-        <SelectValue placeholder={lang.toUpperCase()} />
+        <SelectValue />
       </SelectTrigger>
       <SelectContent className={classNameContent}>
         <SelectGroup>

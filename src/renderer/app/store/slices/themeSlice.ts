@@ -1,4 +1,4 @@
-import { RootState } from '@/app/store/store'
+import { RootState } from '@/app/store'
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialTheme = window.matchMedia('(prefers-color-scheme: dark)').matches

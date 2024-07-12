@@ -1,8 +1,7 @@
 import { useAppDispatch, useAppSelector } from '@/app/hooks/useActions'
-import * as en from '@/app/locale/en.json'
-import * as ru from '@/app/locale/ru.json'
-import { setData } from '@/app/store/statsSlice'
-import { setError, setReady, setWaiting } from '@/app/store/statusSlice'
+import getText from '@/app/locale'
+import { setData } from '@/app/store/slices/statsSlice'
+import { setError, setReady, setWaiting } from '@/app/store/slices/statusSlice'
 import { useRef, useState } from 'react'
 
 interface ISearchForm {
@@ -43,9 +42,7 @@ export default function SearchForm({ searchQueryName }: ISearchForm) {
   return (
     <form>
       <div className="my-4 flex justify-center gap-2">
-        <label htmlFor="searchInput">
-          {lang == 'en' ? en.searchRequest : ru.searchRequest}:
-        </label>
+        <label htmlFor="searchInput">{getText(lang, 'searchRequest')}:</label>
         <input
           ref={searchInput}
           id="searchInput"
@@ -62,10 +59,10 @@ export default function SearchForm({ searchQueryName }: ISearchForm) {
           className={
             status === 'waiting'
               ? 'font-semibold px-4 py-2 rounded-xl bg-gray-300'
-              : 'font-semibold px-4 py-2 rounded-xl bg-red-300 dark:bg-red-500 hover:bg-red-400 dark:hover:bg-red-600 active:bg-red-500 dark:active:bg-red-700 focus:outline-none focus:border-red-700 dark:focus:border-red-300 focus:ring-2 focus:ring-red-700 dark:focus:ring-red-300'
+              : 'font-semibold px-4 py-2 rounded-xl transition-colors bg-red-300 dark:bg-red-500 hover:bg-red-400 dark:hover:bg-red-600 active:bg-red-500 dark:active:bg-red-700 focus:outline-none focus:border-red-700 dark:focus:border-red-300 focus:ring-2 focus:ring-red-700 dark:focus:ring-red-300'
           }
         >
-          {lang == 'en' ? en.searchButton : ru.searchButton}
+          {getText(lang, 'searchButton')}
         </button>
       </div>
     </form>
