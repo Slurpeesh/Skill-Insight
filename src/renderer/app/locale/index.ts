@@ -1,8 +1,8 @@
-import * as en from '@/app/locale/en.json'
-import * as ru from '@/app/locale/ru.json'
+import { En } from '@/app/locale/en'
+import { Ru } from '@/app/locale/ru'
 
-type LangKeys = keyof typeof en
+export type LangKeys = keyof typeof En
 
 export default function getText(lang: string, context: LangKeys) {
-  return lang == 'en' ? en[context] : ru[context]
+  return lang == 'en' ? En[context] : Ru[context]
 }

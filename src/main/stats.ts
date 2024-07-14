@@ -1,20 +1,21 @@
-import { IpcMainInvokeEvent } from 'electron'
-
 export function getVacancies(
-  searchRequest: IpcMainInvokeEvent,
-  area: number,
+  searchRequest: string,
+  area: Array<string>,
   page: number,
   locale: string,
   mail: string,
   accessToken: string
 ) {
   const params = new URLSearchParams({
-    text: `${searchRequest}`,
-    area: `${area}`,
+    text: searchRequest,
     per_page: '100',
-    page: `${page}`,
-    locale: `${locale}`,
+    page: page.toString(),
+    locale,
   })
+  for (const item of area) {
+    params.append('area', item)
+  }
+
   const url = `https://api.hh.ru/vacancies?${params}`
   const headers = {
     'User-Agent': `Skill Insight/1.0 (${mail})`,
@@ -49,6 +50,7 @@ export function getVacancySkills(
       if (data.errors) {
         return data
       }
+      // console.log(data.area.name)
       const skills: Array<string> = []
       for (const skill of data.key_skills) {
         skills.push(skill.name)

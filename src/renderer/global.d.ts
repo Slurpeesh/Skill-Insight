@@ -1,5 +1,9 @@
 export interface IElectronAPI {
-  getStats: (string, string) => Promise<IStats>
+  getStats: (
+    searchQuery: string,
+    lang: string,
+    area: Array<string>
+  ) => Promise<IStats>
   changeTheme: () => void
 }
 

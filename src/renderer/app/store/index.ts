@@ -1,3 +1,5 @@
+import copyReducer from '@/app/store/slices/copySlice'
+import countriesReducer from '@/app/store/slices/countriesSlice'
 import langReducer from '@/app/store/slices/langSlice'
 import statsReducer from '@/app/store/slices/statsSlice'
 import statusReducer from '@/app/store/slices/statusSlice'
@@ -10,6 +12,8 @@ export const store = configureStore({
     status: statusReducer,
     theme: themeReducer,
     lang: langReducer,
+    countries: countriesReducer,
+    copy: copyReducer,
   },
 })
 

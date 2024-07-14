@@ -114,125 +114,139 @@ app.on('ready', () => {
     }
   })
 
-  ipcMain.handle('stats', async (e, searchQuery, locale) => {
-    console.log(locale)
-    setProgress(2)
-    let stats: IStats = {}
-    console.log(searchQuery)
-    const data = await getVacancies(
-      searchQuery,
-      113,
-      0,
-      locale,
-      process.env.ELECTRON_WEBPACK_APP_MAIL,
-      process.env.ELECTRON_WEBPACK_APP_ACCESS_TOKEN
-    )
-
-    const pages = data.pages
-    let found = data.found
-    console.log(`Pages to be considered: ${pages}`)
-
-    // limitations of hh.ru api
-    if (found > 2000) {
-      found = 2000
-    }
-
-    console.log(`Vacancies to be considered: ${found}`)
-
-    const stepsAmount = found + pages
-    let currentStep = 0
-
-    const clusters = []
-
-    const limit = pLimit(4)
-    let input = []
-
-    for (let page = 0; page < pages; page++) {
-      input.push(
-        limit(() =>
-          getVacancies(
-            searchQuery,
-            113,
-            page,
-            locale,
-            process.env.ELECTRON_WEBPACK_APP_MAIL,
-            process.env.ELECTRON_WEBPACK_APP_ACCESS_TOKEN
-          ).then((res) => {
-            currentStep += 1
-            if (currentStep / stepsAmount >= 0.01) {
-              setProgress(currentStep / stepsAmount)
-            }
-            return res
-          })
-        )
+  ipcMain.handle(
+    'stats',
+    async (
+      e: Electron.IpcMainInvokeEvent,
+      searchQuery: string,
+      locale: string,
+      area: Array<string>
+    ) => {
+      console.log(locale)
+      console.log(searchQuery)
+      console.log('Area ids:', area)
+      setProgress(2)
+      let stats: IStats = {}
+      const data = await getVacancies(
+        searchQuery,
+        area,
+        0,
+        locale,
+        process.env.ELECTRON_WEBPACK_APP_MAIL,
+        process.env.ELECTRON_WEBPACK_APP_ACCESS_TOKEN
       )
-    }
 
-    let results = await Promise.all(input)
-    for (const result of results) {
-      if (result.errors) {
-        if (currentStep / stepsAmount >= 0.01) {
-          setProgress(currentStep / stepsAmount, 'error')
-        } else {
-          setProgress(0.01, 'error')
-        }
-        return result
+      if (data.errors) {
+        setProgress(0.01, 'error')
+        return data
       }
-      clusters.push(result.items)
-    }
 
-    input = []
+      const pages = data.pages
+      let found = data.found
 
-    for (const vacancies of clusters) {
-      for (const vacancy of vacancies) {
-        const id = vacancy.id
+      // limitations of hh.ru api
+      if (found > 2000) {
+        found = 2000
+      }
+
+      console.log(`Pages to be considered: ${pages}`)
+      console.log(`Vacancies to be considered: ${found}`)
+
+      const stepsAmount = found + pages
+      let currentStep = 0
+
+      const clusters = []
+
+      const limit = pLimit(4)
+      let input = []
+
+      for (let page = 0; page < pages; page++) {
         input.push(
           limit(() =>
-            getVacancySkills(
-              id,
+            getVacancies(
+              searchQuery,
+              area,
+              page,
               locale,
               process.env.ELECTRON_WEBPACK_APP_MAIL,
               process.env.ELECTRON_WEBPACK_APP_ACCESS_TOKEN
             ).then((res) => {
               currentStep += 1
-              setProgress(currentStep / stepsAmount)
+              if (currentStep / stepsAmount >= 0.01) {
+                setProgress(currentStep / stepsAmount)
+              }
               return res
             })
           )
         )
       }
-    }
 
-    results = await Promise.all(input)
-
-    for (const skills of results) {
-      if (skills.errors) {
-        if (currentStep / stepsAmount >= 0.01) {
-          setProgress(currentStep / stepsAmount, 'error')
-        } else {
-          setProgress(0.01, 'error')
-        }
-        return skills
-      }
-      if (skills) {
-        for (const skill of skills) {
-          if (skill in stats) {
-            stats[skill] += 1
+      let results = await Promise.all(input)
+      for (const result of results) {
+        if (result.errors) {
+          if (currentStep / stepsAmount >= 0.01) {
+            setProgress(currentStep / stepsAmount, 'error')
           } else {
-            stats[skill] = 1
+            setProgress(0.01, 'error')
+          }
+          return result
+        }
+        clusters.push(result.items)
+      }
+
+      input = []
+
+      for (const vacancies of clusters) {
+        for (const vacancy of vacancies) {
+          const id = vacancy.id
+          input.push(
+            limit(() =>
+              getVacancySkills(
+                id,
+                locale,
+                process.env.ELECTRON_WEBPACK_APP_MAIL,
+                process.env.ELECTRON_WEBPACK_APP_ACCESS_TOKEN
+              ).then((res) => {
+                currentStep += 1
+                setProgress(currentStep / stepsAmount)
+                return res
+              })
+            )
+          )
+        }
+      }
+
+      results = await Promise.all(input)
+
+      for (const skills of results) {
+        if (skills.errors) {
+          if (currentStep / stepsAmount >= 0.01) {
+            setProgress(currentStep / stepsAmount, 'error')
+          } else {
+            setProgress(0.01, 'error')
+          }
+          return skills
+        }
+        if (skills) {
+          for (const skill of skills) {
+            if (skill in stats) {
+              stats[skill] += 1
+            } else {
+              stats[skill] = 1
+            }
           }
         }
       }
-    }
 
-    stats = Object.fromEntries(
-      Object.entries(stats).sort((a, b) => b[1] - a[1])
-    )
-    // console.log(stats)
-    setProgress(0)
-    flash()
-    return stats
-  })
+      stats = Object.fromEntries(
+        Object.entries(stats).sort((a, b) => b[1] - a[1])
+      )
+      // console.log(stats)
+      setProgress(0)
+      flash()
+      return stats
+    }
+  )
   createWindow()
 })
 

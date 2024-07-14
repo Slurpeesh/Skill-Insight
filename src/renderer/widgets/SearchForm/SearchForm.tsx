@@ -1,23 +1,32 @@
 import { useAppDispatch, useAppSelector } from '@/app/hooks/useActions'
+import { randomJob } from '@/app/lib/utils'
 import getText from '@/app/locale'
 import { setData } from '@/app/store/slices/statsSlice'
 import { setError, setReady, setWaiting } from '@/app/store/slices/statusSlice'
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 
 interface ISearchForm {
   searchQueryName: React.MutableRefObject<string>
+  searchCountries: React.MutableRefObject<string[]>
 }
 
-export default function SearchForm({ searchQueryName }: ISearchForm) {
+export default function SearchForm({
+  searchQueryName,
+  searchCountries,
+}: ISearchForm) {
   const [searhQuery, setSearchQuery] = useState('')
   const searchInput = useRef(null)
   const status = useAppSelector((state) => state.status.value)
   const lang = useAppSelector((state) => state.lang.value)
+  const countries = useAppSelector((state) => state.countries.value)
   const dispatch = useAppDispatch()
+
+  const placeholder = useMemo(() => getText(lang, randomJob()), [lang])
 
   async function getStats(searchQuery: string) {
     searchQueryName.current = searchQuery
-    const response = await window.api.getStats(searchQuery, lang)
+    searchCountries.current = countries
+    const response = await window.api.getStats(searchQuery, lang, countries)
     dispatch(setData(JSON.stringify(response).replaceAll(',', ', ')))
     return response
   }
@@ -30,7 +39,7 @@ export default function SearchForm({ searchQueryName }: ISearchForm) {
     dispatch(setWaiting())
     const target = e.currentTarget
     target.disabled = true
-    const response = await getStats(searhQuery)
+    const response = await getStats(searhQuery.trim())
     target.disabled = false
     if (response.errors) {
       dispatch(setError())
@@ -48,7 +57,8 @@ export default function SearchForm({ searchQueryName }: ISearchForm) {
           id="searchInput"
           type="text"
           value={searhQuery}
-          className="w-1/4 min-w-40 px-1 border-[1px] border-black text-black focus:outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700"
+          placeholder={placeholder}
+          className="w-1/4 min-w-40 px-1 border-[1px] border-slate-300 text-black focus:outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700"
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
@@ -59,7 +69,7 @@ export default function SearchForm({ searchQueryName }: ISearchForm) {
           className={
             status === 'waiting'
               ? 'font-semibold px-4 py-2 rounded-xl bg-gray-300'
-              : 'font-semibold px-4 py-2 rounded-xl transition-colors bg-red-300 dark:bg-red-500 hover:bg-red-400 dark:hover:bg-red-600 active:bg-red-500 dark:active:bg-red-700 focus:outline-none focus:border-red-700 dark:focus:border-red-300 focus:ring-2 focus:ring-red-700 dark:focus:ring-red-300'
+              : 'font-semibold px-4 py-2 rounded-xl transition-colors bg-red-400 dark:bg-red-600 hover:bg-red-300 dark:hover:bg-red-500 active:bg-red-600 dark:active:bg-red-700 focus:outline-none focus:border-red-700 dark:focus:border-red-300 focus:ring-2 focus:ring-red-700 dark:focus:ring-red-300'
           }
         >
           {getText(lang, 'searchButton')}
