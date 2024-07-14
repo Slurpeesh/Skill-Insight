@@ -13,6 +13,9 @@ export const statusSlice = createSlice({
   name: 'status',
   initialState,
   reducers: {
+    setInitial: (state) => {
+      state.value = 'initial'
+    },
     setWaiting: (state) => {
       state.value = 'waiting'
     },
@@ -25,6 +28,7 @@ export const statusSlice = createSlice({
   },
 })
 
-export const { setWaiting, setReady, setError } = statusSlice.actions
+export const { setInitial, setWaiting, setReady, setError } =
+  statusSlice.actions
 export const selectStatus = (state: RootState) => state.status.value
 export default statusSlice.reducer

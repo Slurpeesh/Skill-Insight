@@ -5,6 +5,7 @@ export interface IElectronAPI {
     area: Array<string>
   ) => Promise<IStats>
   changeTheme: () => void
+  terminate: () => void
 }
 
 declare global {

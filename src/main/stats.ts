@@ -4,7 +4,8 @@ export function getVacancies(
   page: number,
   locale: string,
   mail: string,
-  accessToken: string
+  accessToken: string,
+  signal: AbortSignal
 ) {
   const params = new URLSearchParams({
     text: searchRequest,
@@ -22,9 +23,16 @@ export function getVacancies(
     Authorization: `Bearer ${accessToken}`,
   }
 
-  const response = fetch(url, { headers: headers })
+  const response = fetch(url, { headers: headers, signal })
     .then((response) => response.json())
-    .catch((err) => console.log(err))
+    .catch((err) => {
+      if (err.name === 'AbortError') {
+        // console.log(err)
+        return { terminated: 1 }
+      } else {
+        console.log(err)
+      }
+    })
 
   return response
 }
@@ -33,7 +41,8 @@ export function getVacancySkills(
   vacancyId: number,
   locale: string,
   mail: string,
-  accessToken: string
+  accessToken: string,
+  signal: AbortSignal
 ) {
   const params = new URLSearchParams({
     locale: `${locale}`,
@@ -44,7 +53,7 @@ export function getVacancySkills(
     Authorization: `Bearer ${accessToken}`,
   }
 
-  const response = fetch(url, { headers: headers })
+  const response = fetch(url, { headers: headers, signal })
     .then((response) => response.json())
     .then((data) => {
       if (data.errors) {
@@ -57,7 +66,14 @@ export function getVacancySkills(
       }
       return skills
     })
-    .catch((err) => console.log(err))
+    .catch((err) => {
+      if (err.name === 'AbortError') {
+        // console.log(err)
+        return { terminated: 1 }
+      } else {
+        console.log(err)
+      }
+    })
 
   return response
 }

@@ -6,4 +6,5 @@ contextBridge.exposeInMainWorld('api', {
     return ipcRenderer.invoke('stats', searchQuery, locale, area)
   },
   changeTheme: () => ipcRenderer.send('theme'),
+  terminate: () => ipcRenderer.send('terminate'),
 })
