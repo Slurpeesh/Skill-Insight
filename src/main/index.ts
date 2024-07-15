@@ -1,5 +1,6 @@
 /* eslint @typescript-eslint/no-var-requires: "off" */
-import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron'
+import { IGlobStats } from '@/global'
+import { app, BrowserWindow, ipcMain, nativeTheme, shell } from 'electron'
 import { setMaxListeners } from 'node:events'
 import pLimit from 'p-limit'
 import path from 'path'
@@ -84,6 +85,11 @@ const createWindow = (): void => {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools()
+
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url)
+    return { action: 'deny' }
+  })
 }
 
 // This method will be called when Electron has finished
@@ -139,7 +145,9 @@ app.on('ready', () => {
       console.log('Area ids:', area)
 
       setProgress(2)
-      let stats: IStats = {}
+      let stats: IGlobStats = {}
+      let keySkillsStats: IStats = {}
+      let areaStats: IStats = {}
       const data = await getVacancies(
         searchQuery,
         area,
@@ -253,35 +261,46 @@ app.on('ready', () => {
 
       results = await Promise.all(chunks)
 
-      for (const skills of results) {
-        if (skills.terminated) {
+      for (const item of results) {
+        if (item.terminated) {
           setProgress(0)
           console.log('TERMINATED')
-          return skills
+          return item
         }
-        if (skills.errors) {
+        if (item.errors) {
           if (currentStep / stepsAmount >= 0.01) {
             setProgress(currentStep / stepsAmount, 'error')
           } else {
             setProgress(0.01, 'error')
           }
-          return skills
+          return item
         }
-        if (skills) {
-          for (const skill of skills) {
-            if (skill in stats) {
-              stats[skill] += 1
+        if (item) {
+          for (const skill of item.skills) {
+            if (skill in keySkillsStats) {
+              keySkillsStats[skill] += 1
             } else {
-              stats[skill] = 1
+              keySkillsStats[skill] = 1
             }
+          }
+          if (item.area in areaStats) {
+            areaStats[item.area] += 1
+          } else {
+            areaStats[item.area] = 1
           }
         }
       }
 
-      stats = Object.fromEntries(
-        Object.entries(stats).sort((a, b) => b[1] - a[1])
+      keySkillsStats = Object.fromEntries(
+        Object.entries(keySkillsStats).sort((a, b) => b[1] - a[1])
       )
-      // console.log(stats)
+      areaStats = Object.fromEntries(
+        Object.entries(areaStats).sort((a, b) => b[1] - a[1])
+      )
+      // console.log(keySkillsStats)
+      // console.log(areaStats)
+      stats.keySkills = keySkillsStats
+      stats.areas = areaStats
       setProgress(0)
       flash()
       console.log('Ended fetching data!!!')

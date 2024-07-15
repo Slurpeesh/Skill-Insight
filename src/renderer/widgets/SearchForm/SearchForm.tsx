@@ -33,7 +33,7 @@ export default function SearchForm({
     searchQueryName.current = searchQuery
     searchCountries.current = countries
     const response = await window.api.getStats(searchQuery, lang, countries)
-    dispatch(setData(JSON.stringify(response).replaceAll(',', ', ')))
+    dispatch(setData(response))
     return response
   }
 
@@ -43,10 +43,8 @@ export default function SearchForm({
     e.preventDefault()
     searchInput.current.blur()
     dispatch(setWaiting())
-    const target = e.currentTarget
-    target.disabled = true
+    dispatch(setData({}))
     const response = await getStats(searhQuery.trim())
-    target.disabled = false
     if (response.errors) {
       dispatch(setError())
     } else if (response.terminated) {
@@ -77,6 +75,7 @@ export default function SearchForm({
       </div>
       <div className="my-2 flex justify-center gap-5">
         <button
+          disabled={status === 'waiting'}
           type="submit"
           onClick={(e) => searchHandler(e)}
           className={

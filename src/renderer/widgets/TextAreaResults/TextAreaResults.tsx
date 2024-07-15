@@ -19,7 +19,9 @@ export default function TextAreaResults() {
     useRef(undefined)
 
   function copyButtonHandler() {
-    navigator.clipboard.writeText(stats)
+    navigator.clipboard.writeText(
+      JSON.stringify(stats.keySkills).replaceAll(',', ', ')
+    )
     dispatch(setCopied())
 
     if (timeoutID.current) {
@@ -66,7 +68,9 @@ export default function TextAreaResults() {
           </TooltipProvider>
         )}
       </div>
-      <div className="h-full">{stats}</div>
+      <div className="h-full">
+        {JSON.stringify(stats.keySkills).replaceAll(',', ', ')}
+      </div>
     </div>
   )
 }

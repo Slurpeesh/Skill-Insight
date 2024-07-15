@@ -1,19 +1,20 @@
 import { RootState } from '@/app/store'
+import { IGlobStats } from '@/global'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface IStatsState {
-  value: string
+  value: IGlobStats
 }
 
 const initialState: IStatsState = {
-  value: '{}',
+  value: {},
 }
 
 export const statsSlice = createSlice({
   name: 'stats',
   initialState,
   reducers: {
-    setData: (state, action: PayloadAction<string>) => {
+    setData: (state, action: PayloadAction<IGlobStats>) => {
       state.value = action.payload
     },
   },

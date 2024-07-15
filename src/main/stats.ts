@@ -64,7 +64,7 @@ export function getVacancySkills(
       for (const skill of data.key_skills) {
         skills.push(skill.name)
       }
-      return skills
+      return { skills, area: data.area.name }
     })
     .catch((err) => {
       if (err.name === 'AbortError') {
