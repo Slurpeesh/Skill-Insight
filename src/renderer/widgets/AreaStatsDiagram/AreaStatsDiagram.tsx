@@ -16,7 +16,7 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export default function KeySkillsDiagram({ title }: IDiagram) {
-  let stats = useAppSelector((state) => state.stats.value)
+  const stats = useAppSelector((state) => state.stats.value)
 
   const data = []
   let counter = 1

@@ -145,7 +145,7 @@ app.on('ready', () => {
       console.log('Area ids:', area)
 
       setProgress(2)
-      let stats: IGlobStats = {}
+      const stats: IGlobStats = {}
       let keySkillsStats: IStats = {}
       let areaStats: IStats = {}
       const data = await getVacancies(
