@@ -22,6 +22,10 @@ jobs:
       - name: install dependencies
         run: npm ci
       - name: build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ELECTRON_WEBPACK_APP_MAIL: ${{secrets.ELECTRON_WEBPACK_APP_MAIL}}
+          ELECTRON_WEBPACK_APP_ACCESS_TOKEN: ${{secrets.ELECTRON_WEBPACK_APP_ACCESS_TOKEN}}
         run: npm run make
 
   build_on_mac:
@@ -36,6 +40,10 @@ jobs:
       - name: install dependencies
         run: npm ci
       - name: build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ELECTRON_WEBPACK_APP_MAIL: ${{secrets.ELECTRON_WEBPACK_APP_MAIL}}
+          ELECTRON_WEBPACK_APP_ACCESS_TOKEN: ${{secrets.ELECTRON_WEBPACK_APP_ACCESS_TOKEN}}
         run: npm run make
 
   build_on_win:
@@ -50,4 +58,8 @@ jobs:
       - name: install dependencies
         run: npm ci
       - name: build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ELECTRON_WEBPACK_APP_MAIL: ${{secrets.ELECTRON_WEBPACK_APP_MAIL}}
+          ELECTRON_WEBPACK_APP_ACCESS_TOKEN: ${{secrets.ELECTRON_WEBPACK_APP_ACCESS_TOKEN}}
         run: npm run make
