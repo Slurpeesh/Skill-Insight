@@ -27,6 +27,20 @@ if (require('electron-squirrel-startup')) {
 
 const isDev = !app.isPackaged
 
+const isWindows = process.platform === 'win32'
+const isMac = process.platform === 'darwin'
+const isLinux = process.platform === 'linux'
+
+function getIconName() {
+  if (isWindows) {
+    return 'icon.ico'
+  } else if (isMac) {
+    return 'icon.icns'
+  } else if (isLinux) {
+    return 'icon.png'
+  }
+}
+
 let setProgress: (
   value: number,
   mode?: Electron.ProgressBarOptions['mode']
@@ -39,7 +53,7 @@ const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    icon: path.join(__dirname, 'icon.ico'),
+    icon: path.join(__dirname, getIconName()),
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
       devTools: isDev,
@@ -66,7 +80,7 @@ const createWindow = (): void => {
   }
 
   flash = () => {
-    if (process.platform !== 'darwin') {
+    if (!isMac) {
       if (!mainWindow.isFocused()) {
         mainWindow.flashFrame(true)
         mainWindow.once('focus', () => mainWindow.flashFrame(false))
@@ -76,7 +90,7 @@ const createWindow = (): void => {
     }
   }
 
-  if (process.platform !== 'darwin') {
+  if (!isMac) {
     mainWindow.removeMenu()
   }
 
@@ -314,7 +328,7 @@ app.on('ready', () => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+  if (!isMac) {
     app.quit()
   }
 })

@@ -21,7 +21,9 @@ export default function App() {
 
   return (
     <div className="p-5 bg-slate-200 dark:bg-slate-900 dark:text-slate-200 max-w-screen min-h-screen">
-      <div className="text-3xl font-bold text-center mb-4">Skill Insight</div>
+      <div className="text-3xl font-bold tracking-wide text-center mb-4">
+        Skill Insight
+      </div>
       <GitHubLink className="absolute top-5 left-5 w-14 h-14 rounded-full p-2 transition-colors hover:bg-slate-300 dark:hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-700" />
       <SelectLang
         classNameTrigger="absolute top-5 right-20 w-30 dark:bg-slate-700 border-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-700"

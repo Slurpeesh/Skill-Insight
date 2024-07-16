@@ -47,7 +47,7 @@ export default function GitHubLink({ className }: IGitHubLink) {
             }
           >
             <p>https://github.com/Slurpeesh/Skill-Insight</p>
-            <ExternalLink className="w-4 h-4" />
+            <ExternalLink className="w-4 h-4 stroke-[1.5]" />
           </a>
         </TooltipContent>
       </Tooltip>

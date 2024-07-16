@@ -80,8 +80,8 @@ export default function SearchForm({
           onClick={(e) => searchHandler(e)}
           className={
             status === 'waiting'
-              ? 'font-semibold px-4 py-2 rounded-xl bg-gray-300'
-              : 'font-semibold px-4 py-2 rounded-xl transition-colors bg-red-400 dark:bg-red-600 hover:bg-red-500 dark:hover:bg-red-700 active:bg-red-600 dark:active:bg-red-800 focus:outline-none focus:border-red-700 dark:focus:border-red-300 focus:ring-2 focus:ring-red-700 dark:focus:ring-red-300'
+              ? 'px-4 py-2 rounded-xl bg-gray-300'
+              : 'px-4 py-2 rounded-xl transition-colors bg-red-400 dark:bg-red-600 hover:bg-red-500 dark:hover:bg-red-700 active:bg-red-600 dark:active:bg-red-800 focus:outline-none focus:border-red-700 dark:focus:border-red-300 focus:ring-2 focus:ring-red-700 dark:focus:ring-red-300'
           }
         >
           {getText(lang, 'searchButton')}

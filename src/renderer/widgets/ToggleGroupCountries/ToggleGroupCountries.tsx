@@ -26,9 +26,7 @@ export default function ToggleGroupCountries() {
 
   return (
     <>
-      <div className="my-2 font-semibold text-center">
-        {getText(lang, 'chooseCountry')}
-      </div>
+      <div className="my-2 text-center">{getText(lang, 'chooseCountry')}</div>
       {flags && (
         <ToggleGroup
           className="flex flex-wrap gap-4 mx-24"
