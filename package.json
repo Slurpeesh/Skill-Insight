@@ -5,14 +5,14 @@
     "type": "git",
     "url": "https://github.com/Slurpeesh/Skill-Insight.git"
   },
-  "version": "1.0.0",
+  "version": "0.9.9",
   "description": "Skill Insight is an application that help you to view work marketplace statistics",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "publish": "electron-forge publish",
+    "publish": "electron-forge publish --arch x64",
     "lint": "eslint --ext .ts,.tsx ."
   },
   "devDependencies": {
