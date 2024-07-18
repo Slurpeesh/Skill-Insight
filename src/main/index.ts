@@ -6,7 +6,16 @@ import pLimit from 'p-limit'
 import path from 'path'
 import { updateElectronApp } from 'update-electron-app'
 import { getVacancies, getVacancySkills } from './stats'
-updateElectronApp()
+
+const isDev = !app.isPackaged
+
+const isWindows = process.platform === 'win32'
+const isMac = process.platform === 'darwin'
+const isLinux = process.platform === 'linux'
+
+if (!isMac) {
+  updateElectronApp()
+}
 
 setMaxListeners(300)
 
@@ -24,12 +33,6 @@ interface IStats {
 if (require('electron-squirrel-startup')) {
   app.quit()
 }
-
-const isDev = !app.isPackaged
-
-const isWindows = process.platform === 'win32'
-const isMac = process.platform === 'darwin'
-const isLinux = process.platform === 'linux'
 
 function getIconName() {
   if (isWindows) {
